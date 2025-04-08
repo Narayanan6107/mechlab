@@ -65,10 +65,10 @@ facePlane.position.set(-0.126, 0, 1.29);
 facePlane.rotation.set(0, -0.1, 0);
 scene.add(facePlane);
 
-// Load and add 3D text (smaller, cleaner)
+// Load and add 3D text "TOP LAND"
 const fontLoader = new THREE.FontLoader();
 fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function (font) {
-  const textGeo = new THREE.TextGeometry('FACE LAND', {
+  const textGeo = new THREE.TextGeometry('TOP LAND', {
     font: font,
     size: 0.03,
     height: 0.01,
@@ -112,7 +112,7 @@ document.getElementById('partsBtn').addEventListener('click', () => {
       controls.update();
     },
     onComplete: () => {
-      document.getElementById('faceLandBtn').style.display = 'inline-block';
+      document.getElementById('topLandBtn').style.display = 'inline-block';
       document.getElementById('backBtn').style.display = 'inline-block';
     }
   });
@@ -125,8 +125,8 @@ document.getElementById('partsBtn').addEventListener('click', () => {
   }
 });
 
-// FACE LAND button
-document.getElementById('faceLandBtn').addEventListener('click', () => {
+// TOP LAND button
+document.getElementById('topLandBtn').addEventListener('click', () => {
   if (!model) return;
   gsap.to(camera.position, {
     x: 0,
@@ -161,6 +161,6 @@ document.getElementById('backBtn').addEventListener('click', () => {
     }
   });
 
-  document.getElementById('faceLandBtn').style.display = 'none';
+  document.getElementById('topLandBtn').style.display = 'none';
   document.getElementById('backBtn').style.display = 'none';
 });
