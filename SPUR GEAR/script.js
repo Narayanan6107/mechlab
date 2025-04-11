@@ -56,8 +56,8 @@ const faceMat = new THREE.MeshStandardMaterial({ color: 0xff0000, opacity: 0.6, 
 const faceGeo = new THREE.PlaneGeometry(0.1, 0.38);
 facePlane = new THREE.Mesh(faceGeo, faceMat);
 facePlane.visible = false;
-facePlane.position.set(-0.126, 0, 1.29);
-facePlane.rotation.set(0, -0.1, 0);
+facePlane.position.set(0, 0.2, 0); // Move to the top of the gear
+facePlane.rotation.set(-Math.PI / 2, 0, 0); // Align horizontally
 scene.add(facePlane);
 
 // Font and Text
@@ -67,8 +67,8 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.
   const faceTextGeo = new THREE.TextGeometry('TOP LAND', { font, size: 0.03, height: 0.01 });
   const faceTextMat = new THREE.MeshStandardMaterial({ color: 0x005533 });
   faceTextMesh = new THREE.Mesh(faceTextGeo, faceTextMat);
-  faceTextMesh.position.set(-0.22, 0.25, 1.26);
-  faceTextMesh.rotation.y = -0.1;
+  faceTextMesh.position.set(0, 0.25, 0); // Position above the facePlane
+  faceTextMesh.rotation.set(-Math.PI / 2, 0, 0); // Align horizontally
   faceTextMesh.visible = false;
   scene.add(faceTextMesh);
 
@@ -177,8 +177,12 @@ document.getElementById('partsBtn').addEventListener('click', () => {
 });
 
 // TOP LAND
+// Ensure the gear stops rotating and the highlighted area follows the gear's rotation
+
 document.getElementById('topLandBtn').addEventListener('click', () => {
   if (!model) return;
+
+  isRotating = false; // Stop the gear from spinning
 
   facePlane.visible = true;
   faceTextMesh && (faceTextMesh.visible = true);
@@ -197,6 +201,13 @@ document.getElementById('topLandBtn').addEventListener('click', () => {
       camera.lookAt(center);
       controls.target.copy(center);
       controls.update();
+    },
+    onComplete: () => {
+      // Ensure the facePlane and faceTextMesh follow the model's rotation
+      if (model) {
+        facePlane.rotation.copy(model.rotation);
+        faceTextMesh.rotation.copy(model.rotation);
+      }
     }
   });
 });
