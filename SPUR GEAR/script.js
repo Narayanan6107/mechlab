@@ -274,13 +274,13 @@ document.getElementById('detailsBtn').addEventListener('click', () => {
   dedendumCircle.visible = true;
   rootCircle.visible = true;
 
-  const backFocus = model.position.clone().add(new THREE.Vector3(0, 0.05, -1));
+  const backFocus = model.position.clone().add(new THREE.Vector3(0, 0.01, -1));
 
   gsap.to(camera.position, {
     x: backFocus.x,
     y: backFocus.y + .1,
     z: backFocus.z,
-    duration: 0.5,
+    duration: 1.5,
     onUpdate: () => {
       camera.lookAt(backFocus);
       controls.target.copy(backFocus);
@@ -315,4 +315,9 @@ document.getElementById('backBtn').addEventListener('click', () => {
       controls.update();
     }
   });
-});
+
+  document.getElementById('topLandBtn').style.display = 'none';
+  document.getElementById('pitchCircleBtn').style.display = 'none';
+  document.getElementById('backBtn').style.display = 'none';
+  document.getElementById('detailsBtn').style.display = 'none';
+}); 
