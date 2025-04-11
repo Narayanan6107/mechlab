@@ -315,9 +315,4 @@ document.getElementById('backBtn').addEventListener('click', () => {
       controls.update();
     }
   });
-
-  document.getElementById('topLandBtn').style.display = 'none';
-  document.getElementById('pitchCircleBtn').style.display = 'none';
-  document.getElementById('backBtn').style.display = 'none';
-  document.getElementById('detailsBtn').style.display = 'none';
-}); 
+});
