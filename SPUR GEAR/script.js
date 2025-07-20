@@ -321,11 +321,12 @@ fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.
 
   // Face Width Text
   const faceWidthTextGeo = new THREE.TextGeometry('FACE WIDTH', {
-    font: font, size: 0.04, height: 0.01
+    font: font, size: 0.06, height: 0.01
   });
-  const faceWidthTextMat = new THREE.MeshStandardMaterial({ color: 0xffaa00 });
+  const faceWidthTextMat = new THREE.MeshStandardMaterial({ color: 0xff6600 });
   faceWidthTextMesh = new THREE.Mesh(faceWidthTextGeo, faceWidthTextMat);
-  faceWidthTextMesh.position.set(-0.5, 0.5, 0);
+  faceWidthTextMesh.position.set(1.8, 0.3, 0);
+  faceWidthTextMesh.rotation.y = Math.PI / 2;
   faceWidthTextMesh.visible = false;
   scene.add(faceWidthTextMesh);
 
@@ -417,26 +418,78 @@ for (let i = 0; i < 12; i++) {
   scene.add(line);
 }
 
-// Face Width Planes
-const faceWidthMaterial = new THREE.MeshStandardMaterial({
-  color: 0xffaa00,
-  opacity: 0.4,
-  transparent: true,
-  side: THREE.DoubleSide
-});
-const faceWidthGeometry = new THREE.PlaneGeometry(2.8, 2.8);
+// Face Width Visualization - Correct Engineering Definition
+// Face width is the axial length of the gear - the thickness of the gear body
 
-const leftFacePlane = new THREE.Mesh(faceWidthGeometry, faceWidthMaterial);
-leftFacePlane.position.set(0, 0, -0.19);
-leftFacePlane.visible = false;
-faceWidthPlanes.push(leftFacePlane);
-scene.add(leftFacePlane);
+// Create highlighted edges to show the gear faces (front and back)
+const edgeGeometry = new THREE.EdgesGeometry(new THREE.CylinderGeometry(1.3, 1.3, 0.01, 32));
+const edgeMaterial = new THREE.LineBasicMaterial({ color: 0xffaa00, linewidth: 4 });
 
-const rightFacePlane = new THREE.Mesh(faceWidthGeometry, faceWidthMaterial);
-rightFacePlane.position.set(0, 0, 0.19);
-rightFacePlane.visible = false;
-faceWidthPlanes.push(rightFacePlane);
-scene.add(rightFacePlane);
+// Front face edge
+const frontFaceEdge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+frontFaceEdge.position.set(0, 0, 0.19);
+frontFaceEdge.rotation.x = Math.PI / 2;
+frontFaceEdge.visible = false;
+faceWidthPlanes.push(frontFaceEdge);
+scene.add(frontFaceEdge);
+
+// Back face edge
+const backFaceEdge = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+backFaceEdge.position.set(0, 0, -0.19);
+backFaceEdge.rotation.x = Math.PI / 2;
+backFaceEdge.visible = false;
+faceWidthPlanes.push(backFaceEdge);
+scene.add(backFaceEdge);
+
+// Create dimension line on the side to show face width measurement
+const dimensionMaterial = new THREE.LineBasicMaterial({ color: 0xff6600, linewidth: 3 });
+
+// Main dimension line (showing the axial distance)
+const axisDimensionGeometry = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(1.6, 0, -0.19),
+  new THREE.Vector3(1.6, 0, 0.19)
+]);
+const axisDimensionLine = new THREE.Line(axisDimensionGeometry, dimensionMaterial);
+axisDimensionLine.visible = false;
+faceWidthPlanes.push(axisDimensionLine);
+scene.add(axisDimensionLine);
+
+// Extension lines from gear faces to dimension line
+const frontExtensionGeometry = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(1.3, 0, 0.19),
+  new THREE.Vector3(1.7, 0, 0.19)
+]);
+const frontExtensionLine = new THREE.Line(frontExtensionGeometry, dimensionMaterial);
+frontExtensionLine.visible = false;
+faceWidthPlanes.push(frontExtensionLine);
+scene.add(frontExtensionLine);
+
+const backExtensionGeometry = new THREE.BufferGeometry().setFromPoints([
+  new THREE.Vector3(1.3, 0, -0.19),
+  new THREE.Vector3(1.7, 0, -0.19)
+]);
+const backExtensionLine = new THREE.Line(backExtensionGeometry, dimensionMaterial);
+backExtensionLine.visible = false;
+faceWidthPlanes.push(backExtensionLine);
+scene.add(backExtensionLine);
+
+// Arrow heads for dimension line
+const arrowGeometry = new THREE.ConeGeometry(0.025, 0.06, 8);
+const arrowMaterial = new THREE.MeshBasicMaterial({ color: 0xff6600 });
+
+const frontArrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+frontArrow.position.set(1.6, 0, 0.15);
+frontArrow.rotation.x = -Math.PI / 2;
+frontArrow.visible = false;
+faceWidthPlanes.push(frontArrow);
+scene.add(frontArrow);
+
+const backArrow = new THREE.Mesh(arrowGeometry, arrowMaterial);
+backArrow.position.set(1.6, 0, -0.15);
+backArrow.rotation.x = Math.PI / 2;
+backArrow.visible = false;
+faceWidthPlanes.push(backArrow);
+scene.add(backArrow);
 
 // Animate
 function animate() {
@@ -880,10 +933,10 @@ document.getElementById('faceWidthBtn').addEventListener('click', () => {
   if (pressureAngleTextMesh) pressureAngleTextMesh.visible = false;
   if (clearanceTextMesh) clearanceTextMesh.visible = false;
 
-  // Enhanced camera animation for side view
+  // Enhanced camera animation for side view to show axial face width
   gsap.to(camera.position, {
-    x: 3,
-    y: 0.5,
+    x: 2.5,
+    y: 0,
     z: 0,
     duration: 2,
     ease: "power2.inOut",
@@ -894,22 +947,25 @@ document.getElementById('faceWidthBtn').addEventListener('click', () => {
       controls.update();
     },
     onComplete: () => {
-      // Show face width planes with staggered animation
-      faceWidthPlanes.forEach((plane, index) => {
-        setTimeout(() => {
-          plane.visible = true;
-          addGlowEffect(plane, 0xffaa00);
-          
-          // Slide animation
-          plane.position.z = index === 0 ? -0.5 : 0.5;
-          gsap.to(plane.position, {
-            z: index === 0 ? -0.19 : 0.19,
-            duration: 1,
-            ease: "elastic.out(1, 0.3)"
-          });
-        }, index * 400);
-      });
+      // Show face width elements in sequence
+      let elementIndex = 0;
       
+      // Show face planes first
+      setTimeout(() => {
+        faceWidthPlanes[0].visible = true; // Left face plane
+        faceWidthPlanes[1].visible = true; // Right face plane
+        addGlowEffect(faceWidthPlanes[0], 0xffaa00);
+        addGlowEffect(faceWidthPlanes[1], 0xffaa00);
+      }, 200);
+      
+      // Show dimension lines
+      setTimeout(() => {
+        for (let i = 2; i < faceWidthPlanes.length; i++) {
+          faceWidthPlanes[i].visible = true;
+        }
+      }, 600);
+      
+      // Show text
       setTimeout(() => {
         if (faceWidthTextMesh) {
           faceWidthTextMesh.visible = true;
@@ -919,22 +975,20 @@ document.getElementById('faceWidthBtn').addEventListener('click', () => {
             ease: "back.out(1.7)"
           });
         }
-      }, 800);
+      }, 1000);
       
       // Show educational information
       setTimeout(() => {
         showInfoPanel('faceWidth');
-      }, 1000);
+      }, 1200);
       
-      // Add breathing animation to face width planes
-      faceWidthPlanes.forEach(plane => {
-        gsap.to(plane.material, {
-          opacity: 0.6,
-          duration: 2,
-          yoyo: true,
-          repeat: -1,
-          ease: "sine.inOut"
-        });
+      // Add gentle pulsing animation to face width indicators
+      gsap.to([faceWidthPlanes[0].material, faceWidthPlanes[1].material], {
+        opacity: 0.6,
+        duration: 2,
+        yoyo: true,
+        repeat: -1,
+        ease: "sine.inOut"
       });
     }
   });
