@@ -3,18 +3,45 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Three.js Gear Viewer</title>
+  <title>Spur Gear Educational Viewer - Learn Gear Components</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div id="buttons">
-  <button id="partsBtn">Parts</button>
-  <button id="topLandBtn" style="display: none;">Top Land</button>
-  <button id="pitchCircleBtn" style="display: none;">Pitch Circle & Addendum Circle</em></button>
-  <button id="detailsBtn" style="display: none;">Addendum & Dedendum</button>
-  <button id="backBtn" style="display: none;">Back</button>
+<div id="header">
+  <h1>🔧 Spur Gear Educational Viewer</h1>
+  <p>Interactive 3D learning tool for understanding gear components</p>
+</div>
 
+<div id="buttons">
+  <button id="partsBtn">🏠 Explore Parts</button>
+  <button id="topLandBtn" style="display: none;">📏 Top Land</button>
+  <button id="pitchCircleBtn" style="display: none;">⭕ Pitch & Addendum</button>
+  <button id="detailsBtn" style="display: none;">📐 All Circles</button>
+  <button id="toothThicknessBtn" style="display: none;">📊 Tooth Thickness</button>
+  <button id="pressureAngleBtn" style="display: none;">📐 Pressure Angle</button>
+  <button id="faceWidthBtn" style="display: none;">📏 Face Width</button>
+  <button id="clearanceBtn" style="display: none;">🔵 Clearance Circle</button>
+  <button id="backBtn" style="display: none;">⬅️ Back to Menu</button>
+</div>
+
+<div id="infoPanel" style="display: none;">
+  <div id="infoContent">
+    <h3 id="infoTitle">Component Information</h3>
+    <p id="infoDescription">Click on a component to learn more about it.</p>
+    <div id="infoDetails"></div>
+  </div>
+  <button id="closeInfo">✖️</button>
+</div>
+
+<div id="instructions">
+  <h4>🎯 How to Use:</h4>
+  <ul>
+    <li>Click "Explore Parts" to start learning</li>
+    <li>Select any component to see detailed information</li>
+    <li>Use mouse to rotate and zoom the 3D model</li>
+    <li>Each color represents a different component</li>
+  </ul>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
